@@ -1,0 +1,39 @@
+name: Deploy Frontend to Azure Storage
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual deployment
+
+env:
+  AZURE_STORAGE_ACCOUNT: 'travelblogswiss'
+  AZURE_STORAGE_CONTAINER: '$web'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Upload files to Azure Storage
+      uses: azure/cli@v1
+      with:
+        azcliversion: 2.0.72
+        inlineScript: |
+          az storage blob upload-batch \
+            --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
+            --source ./ \
+            --destination ${{ env.AZURE_STORAGE_CONTAINER }} \
+            --overwrite
+      
+    - name: Verify deployment
+      run: |
+        echo "Frontend deployed successfully!"
+        echo "Visit: https://${{ env.AZURE_STORAGE_ACCOUNT }}.z1.web.core.windows.net"
