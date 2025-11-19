@@ -1,0 +1,85 @@
+/* Footer Layout */
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    border-top: 1px solid #e9ecef;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Visitor Counter on Left */
+.visitor-counter-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Copyright Text Centered */
+.footer-content {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #6c757d;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* Counter Styles */
+.counter-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.counter-icon {
+    font-size: 1.1em;
+}
+
+.counter-text {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+.counter-number {
+    font-size: 1.1em;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .visitor-counter-wrapper {
+        justify-content: center;
+    }
+    
+    .footer-content {
+        position: static;
+        transform: none;
+        order: 2;
+    }
+    
+    .visitor-counter-wrapper {
+        order: 1;
+    }
+}
