@@ -22,15 +22,17 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    - name: Upload files to Azure Storage
+    - name: Upload static files to Azure Storage
       uses: azure/cli@v1
       with:
-        azcliversion: 2.0.72
+        azcliversion: latest
         inlineScript: |
+          # Upload specific file types commonly used in static websites
           az storage blob upload-batch \
             --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
             --source ./ \
             --destination ${{ env.AZURE_STORAGE_CONTAINER }} \
+            --pattern "*.html;*.css;*.js;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.ico;*.json;*.txt;*.xml;*.webp;*.woff;*.woff2;*.ttf;*.eot" \
             --overwrite
       
     - name: Verify deployment
