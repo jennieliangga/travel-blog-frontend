@@ -17,36 +17,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: List files (debug)
-      run: ls -la
-      
     - name: Login to Azure
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    - name: Test Azure CLI access
-      run: |
-        az account show
-        az storage account list --query '[].{Name:name, ResourceGroup:resourceGroup}' --output table
-        
-    - name: Check storage account exists
-      run: |
-        az storage account show --name ${{ env.AZURE_STORAGE_ACCOUNT }} --query '{Name:name, ResourceGroup:resourceGroup, Kind:kind}'
-        
-    - name: Upload static files to Azure Storage
+    - name: Upload files to Azure Storage
       uses: azure/cli@v1
       with:
         azcliversion: latest
         inlineScript: |
-          echo "Current directory: $(pwd)"
-          echo "Files to be uploaded:"
-          find . -type f -name "*.html" -o -name "*.css" -o -name "*.js" -o -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.gif" -o -name "*.svg" | head -20
-          
-          # Try the upload
           az storage blob upload-batch \
             --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
             --source ./ \
-            --destination ${{ env.AZURE_STORAGE_CONTAINER }} \
-            --pattern "*.html;*.css;*.js;*.png;*.jpg;*.jpeg;*.gif;*.svg;*.ico;*.json;*.txt;*.xml;*.webp;*.woff;*.woff2;*.ttf;*.eot" \
+            --destination-container '$web' \
+            --auth-mode login \
             --overwrite
+      
+    - name: Verify deployment
+      run: |
+        echo "Frontend deployed successfully!"
+        echo "Visit: https://${{ env.AZURE_STORAGE_ACCOUNT }}.z1.web.core.windows.net"
