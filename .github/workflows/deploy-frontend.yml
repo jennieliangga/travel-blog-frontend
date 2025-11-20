@@ -23,16 +23,33 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: Upload files to Azure Storage
-      uses: azure/cli@v1
-      with:
-        azcliversion: latest
-        inlineScript: |
-          az storage blob upload-batch \
-            --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
-            --source ./ \
-            --destination-container $web \
-            --auth-mode login \
-            --overwrite
+      run: |
+        # Upload HTML files
+        az storage blob upload-batch \
+          --destination '$web' \
+          --source . \
+          --account-name travelblogswiss \
+          --pattern '*.html' \
+          --auth-mode login \
+          --overwrite
+        
+        # Upload CSS files
+        az storage blob upload-batch \
+          --destination '$web' \
+          --source . \
+          --account-name travelblogswiss \
+          --pattern '*.css' \
+          --auth-mode login \
+          --overwrite
+        
+        # Upload image files
+        az storage blob upload-batch \
+          --destination '$web' \
+          --source . \
+          --account-name travelblogswiss \
+          --pattern '*.jpg;*.jpeg;*.png;*.gif;*.svg' \
+          --auth-mode login \
+          --overwrite
       
     - name: Verify deployment
       run: |
