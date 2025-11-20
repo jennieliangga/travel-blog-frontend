@@ -7,7 +7,6 @@ on:
 
 env:
   AZURE_STORAGE_ACCOUNT: 'travelblogswiss'
-  AZURE_STORAGE_CONTAINER: '$web'
 
 jobs:
   deploy:
@@ -22,37 +21,14 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    - name: Upload files to Azure Storage
+    - name: Upload Files with Azure AD Auth
       run: |
-        # Upload HTML files
         az storage blob upload-batch \
           --destination '$web' \
-          --source . \
-          --account-name travelblogswiss \
-          --pattern '*.html' \
+          --source ./ \
+          --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
           --auth-mode login \
           --overwrite
         
-        # Upload CSS files
-        az storage blob upload-batch \
-          --destination '$web' \
-          --source . \
-          --account-name travelblogswiss \
-          --pattern '*.css' \
-          --auth-mode login \
-          --overwrite
-        
-        # Upload image files
-        az storage blob upload-batch \
-          --destination '$web' \
-          --source . \
-          --account-name travelblogswiss \
-          --pattern '*.jpg;*.jpeg;*.png;*.gif;*.svg' \
-          --auth-mode login \
-          --overwrite
-      
-    - name: Verify deployment
-      run: |
         echo "Frontend deployed successfully!"
         echo "Visit: https://${{ env.AZURE_STORAGE_ACCOUNT }}.z1.web.core.windows.net"
-        
